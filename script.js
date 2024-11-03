@@ -78,10 +78,10 @@ function calculateProbability() {
 
     // 显示 recessive-model 的结果
     document.getElementById("result-recessive").innerText =
-    `Risk of excessive AL progression: ${probability1.toFixed(4)},\n95% confidence intervals: [${lowerBound1.toFixed(4)}, ${upperBound1.toFixed(4)}]`;
+    `Risk of excessive myopia progression: ${probability1.toFixed(4)},\n95% confidence intervals: [${lowerBound1.toFixed(4)}, ${upperBound1.toFixed(4)}]`;
 
     // 显示 rapid-model 的结果
     document.getElementById("result-rapid").innerText =
-    `Risk of rapid AL progression: ${probability2.toFixed(4)},\n95% confidence intervals: [${lowerBound2.toFixed(4)}, ${upperBound2.toFixed(4)}]`;
+    `Risk of rapid myopia progression: ${probability2.toFixed(4)},\n95% confidence intervals: [${lowerBound2.toFixed(4)}, ${upperBound2.toFixed(4)}]`;
 
 }
