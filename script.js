@@ -9,10 +9,13 @@ export const SE = {
   rapid:     { intercept: 0.332, age: 0.000, alccc: 11.982 }
 };
 
-const Z_95 = 1.96;
+// —— **只修改这一行** ——
+// 99% CI 对应的 z 分位数
+const Z_CI = 2.5758;
+
 const sigmoid = z => 1 / (1 + Math.exp(-z));
 
-// ——— 计算函数，带 95% CI ———
+// ——— 计算函数，带 99% CI ———
 export function predictWithCI(modelKey, age, alccc) {
   const m  = MODELS[modelKey];
   const se = SE[modelKey];
@@ -22,8 +25,8 @@ export function predictWithCI(modelKey, age, alccc) {
              + (age   * se.age  )**2
              + (alccc * se.alccc)**2;
   const seZ   = Math.sqrt(varZ);
-  const zLow  = z - Z_95 * seZ;
-  const zHigh = z + Z_95 * seZ;
+  const zLow  = z - Z_CI * seZ;
+  const zHigh = z + Z_CI * seZ;
 
   return {
     p:  sigmoid(z),
@@ -34,13 +37,9 @@ export function predictWithCI(modelKey, age, alccc) {
 
 // ——— 绑定按钮事件 ———
 export function bindCalculator() {
-  console.log('✅ bindCalculator() called');
   const $ = id => document.getElementById(id);
-
   const btn = $('calc');
-  console.log('按钮：', btn);
   btn.addEventListener('click', () => {
-    console.log('🚀 Calculate clicked');
     const age   = Number($('age').value);
     const alccc = Number($('alccc').value);
 
@@ -53,9 +52,9 @@ export function bindCalculator() {
     const resRa = predictWithCI('rapid',     age, alccc);
 
     $('result-excessive').textContent =
-      `过度近视进展风险：${resEx.p.toFixed(3)} (95% CI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
+      `过度近视进展风险：${resEx.p.toFixed(3)} (99% CI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
     $('result-rapid').textContent =
-      `快速近视进展风险：${resRa.p.toFixed(3)} (95% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+      `快速近视进展风险：${resRa.p.toFixed(3)} (99% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
 
