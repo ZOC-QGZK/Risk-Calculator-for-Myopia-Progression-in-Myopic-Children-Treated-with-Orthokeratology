@@ -1,46 +1,62 @@
-// 模型系数和标准误
-const recessiveModelCoefficients = {
-    intercept: 8.1794,
-    age: -0.6749,
-    alccc: 45.3377
+// === 近视进展风险计算（含 95% 置信区间） ===
+
+// 模型系数
+export const MODELS = {
+  excessive: { intercept: 3.9593, age: -0.3104, alccc: 43.311 },
+  rapid:     { intercept: -2.0105, age: 0,       alccc: 56.9745 }
 };
 
-const rapidModelCoefficients = {
-    intercept: 5.3816,
-    age: -0.6522,
-    alccc: 50.9034
+// 各 β 的标准误 (示例值；请替换为真实数据)
+export const SE = {
+  excessive: { intercept: 1.504, age: 0.137, alccc: 7.769 },
+  rapid:     { intercept: 0.332, age: 0.000, alccc: 11.982 }
 };
 
-// 计算Logistic回归的概率
-function logisticFunction(z) {
-    return 1 / (1 + Math.exp(-z));
+const Z_95 = 1.96; // 95% CI 对应的 z 分位数
+const sigmoid = z => 1 / (1 + Math.exp(-z));
+
+export function predictWithCI(modelKey, age, alccc) {
+  const m  = MODELS[modelKey];
+  const se = SE[modelKey];
+
+  const z = m.intercept + m.age * age + m.alccc * alccc;
+
+  // 方差估计（假设各 β 独立）
+  const varZ =
+    Math.pow(se.intercept, 2) +
+    Math.pow(age * se.age, 2) +
+    Math.pow(alccc * se.alccc, 2);
+
+  const seZ = Math.sqrt(varZ);
+  const zLow = z - Z_95 * seZ;
+  const zHigh = z + Z_95 * seZ;
+
+  return {
+    p: sigmoid(z),
+    lo: sigmoid(zLow),
+    hi: sigmoid(zHigh)
+  };
 }
 
-// 计算预测概率
-function calculateProbability() {
-    // 获取用户输入
-    const age = parseFloat(document.getElementById("age").value);
-    const alccc = parseFloat(document.getElementById("alccc").value);
+// 如果要直接和页面元素绑定，可调用 bindCalculator()
+export function bindCalculator() {
+  const get = id => document.getElementById(id);
+  get("calc").addEventListener("click", () => {
+    const age   = Number(get("age").value);
+    const alccc = Number(get("alccc").value);
+    if (Number.isNaN(age) || Number.isNaN(alccc)) {
+      alert("请填写完整且正确的数字！");
+      return;
+    }
 
-    // 计算 recessive-model 的 z 值
-    const z1 = recessiveModelCoefficients.intercept +
-        recessiveModelCoefficients.age * age +
-        recessiveModelCoefficients.alccc * alccc;
+    const resEx = predictWithCI("excessive", age, alccc);
+    const resRa = predictWithCI("rapid",     age, alccc);
 
-    const probability1 = logisticFunction(z1);
+    get("result-excessive").textContent =
+      `过度近视进展风险：${resEx.p.toFixed(3)} (95% CI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
 
-    // 计算 rapid-model 的 z 值
-    const z2 = rapidModelCoefficients.intercept +
-        rapidModelCoefficients.age * age +
-        rapidModelCoefficients.alccc * alccc;
-
-    const probability2 = logisticFunction(z2);
-
-    // 显示 recessive-model 的结果
-    document.getElementById("result-recessive").innerText =
-    `Risk of excessive myopia progression: ${probability1.toFixed(4)}`;
-
-    // 显示 rapid-model 的结果
-    document.getElementById("result-rapid").innerText =
-    `Risk of rapid myopia progression: ${probability2.toFixed(4)}`;
+    get("result-rapid").textContent =
+      `快速近视进展风险：${resRa.p.toFixed(3)} (95% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+  });
 }
+
