@@ -9,37 +9,40 @@ export const SE = {
   rapid:     { intercept: 0.332, age: 0.000, alccc: 11.982 }
 };
 
-// 75% PI 对应的 z 分位数 ≈ 1.15035
-const Z_PI = 1.15035;
-// Logistic 链路的残差方差 ≈ π²/3
+// 95% 预测区间对应的 z 分位数
+const Z_PI = 1.96;
+// Logistic 残差方差 ≈ π²/3，用于包含个体差异
 const RESID_VAR = Math.PI**2 / 3;
 
 const sigmoid = z => 1 / (1 + Math.exp(-z));
 
-// ——— 计算函数，带 95% 预测区间 ———
-export function predictWithPI(modelKey, age, alccc) {
+// ——— Delta 方法：在概率空间构造对称预测区间 ———
+export function predictWithSymmetricPI(modelKey, age, alccc) {
+  // 1. 线性预测（log-odds）
   const m  = MODELS[modelKey];
   const se = SE[modelKey];
-  // 线性组合
-  const z = m.intercept + m.age * age + m.alccc * alccc;
+  const z  = m.intercept + m.age * age + m.alccc * alccc;
 
-  // 参数方差
+  // 2. 对数几率总方差 = 参数方差 + 残差方差
   const varZ = se.intercept**2
              + (age   * se.age  )**2
              + (alccc * se.alccc)**2;
-  // 预测总方差 = 参数方差 + 残差方差
-  const varPred = varZ + RESID_VAR;
-  const sePred   = Math.sqrt(varPred);
+  const varTotal = varZ + RESID_VAR;
+  const seZ = Math.sqrt(varTotal);
 
-  // 预测区间边界
-  const zLow  = z - Z_PI * sePred;
-  const zHigh = z + Z_PI * sePred;
+  // 3. 点估计概率
+  const p = sigmoid(z);
 
-  return {
-    p:  sigmoid(z),
-    lo: sigmoid(zLow),
-    hi: sigmoid(zHigh)
-  };
+  // 4. 根据链式法则近似：SE_p ≈ p(1-p) · SE_z
+  const seP = p * (1 - p) * seZ;
+
+  // 5. 在概率空间做对称区间，并截断到 [0,1]
+  let lo = p - Z_PI * seP;
+  let hi = p + Z_PI * seP;
+  lo = Math.max(0, lo);
+  hi = Math.min(1, hi);
+
+  return { p, lo, hi };
 }
 
 // ——— 绑定按钮事件 ———
@@ -56,13 +59,14 @@ export function bindCalculator() {
       return;
     }
 
-    const resEx = predictWithPI('excessive', age, alccc);
-    const resRa = predictWithPI('rapid',     age, alccc);
+    // 使用新的对称预测区间函数
+    const resEx = predictWithSymmetricPI('excessive', age, alccc);
+    const resRa = predictWithSymmetricPI('rapid',     age, alccc);
 
     $('result-excessive').textContent =
-      `过度近视进展风险：${resEx.p.toFixed(3)} (75% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
+      `过度近视进展风险：${resEx.p.toFixed(3)} (95% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
     $('result-rapid').textContent =
-      `快速近视进展风险：${resRa.p.toFixed(3)} (75% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+      `快速近视进展风险：${resRa.p.toFixed(3)} (95% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
 
