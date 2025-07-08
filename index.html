@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology </title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology</h1>
-        <p>Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive myopia progression and rapid myopia progression under orthokeratology treatment. Excessive myopia progression is defined as the first-year AL change under ortho-k treatment exceed age-specific annualised AL growth of non-progressive myopia, signaling ortho-k did not achieve satisfactory myopia control. Specifically, the annualised AL growth of non-progressive myopia is capped at 0.19 mm for children aged 8 years, at 0.23 mm for children aged 9 years, at 0.19 mm for children aged 10 years, at 0.20 mm for children aged 11 years, at 0.17 mm for children aged 12 years, at 0.13 mm for children aged 13 years, at 0.05 mm for children aged 14 years. In addition, rapid myopia progression is defined as the first-year AL change under ortho-k treatment exceed age-specific annualised axial elongation observed in myopic children wearing single-vision spectacles, indicating that ortho-k failed to achieve its expected myopia-control effect. Specifically, the annualised AL growth is capped at 0.46 mm for those aged 8 years, at 0.41 mm for those aged 9 years, at 0.36 mm for those aged 10 years, at 0.31 mm for those aged 11 years, at 0.26 mm for those aged 12 years, at 0.22 mm for those aged 13 years, at 0.17 mm for those aged 14 years.
+  <div class="container">
+    <h1>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology</h1>
+    <p>Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive myopia progression and rapid myopia progression under orthokeratology treatment. …</p>
 
-            </p>
+    <form id="logistic-form">
+      <div class="form-group">
+        <label for="age"><strong>Age, yr</strong>：</label>
+        <input type="number" id="age" name="age" step="1" required />
+      </div>
+      <div class="form-group">
+        <label for="alccc"><strong>First-month AL Change, mm</strong>：</label>
+        <input type="number" id="alccc" name="alccc" step="0.01" required />
+      </div>
+      <!-- 将 onclick 去掉，改用 id 统一绑定 -->
+      <button type="button" id="calc">Calculate</button>
+    </form>
 
-        <form id="logistic-form">
-            <div class="form-group">
-                <label for="age"> <strong>Age, yr</strong>：</label>
-                <input type="number" id="age" name="age" step="1" required>
-            </div>
-            <div class="form-group">
-                <label for="alccc"> <strong>First-month AL Change, mm</strong>：</label>
-                <input type="number" id="alccc" name="alccc" step="0.01" required>
-            </div>
-            <button type="button" onclick="calculateProbability()">Calculate </button>
-        </form>
-
-        <div id="results" class="results-container">
-            <h3>Results：</h3>
-            <div id="result-excessive" class="result-box"></div>
-            <div id="result-rapid" class="result-box"></div>
-        </div>
+    <div id="results" class="results-container">
+      <h3>Results：</h3>
+      <div id="result-excessive" class="result-box"></div>
+      <div id="result-rapid"     class="result-box"></div>
     </div>
-    <script src="script.js"></script>
+  </div>
+
+  <!-- 以 module 方式引入你的脚本 -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
