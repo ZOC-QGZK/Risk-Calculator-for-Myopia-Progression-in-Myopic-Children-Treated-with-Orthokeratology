@@ -1,4 +1,4 @@
-body {
+body { 
     font-family: 'Arial', sans-serif;
     background-color: #f7f9fc;
     margin: 0;
@@ -46,6 +46,7 @@ input[type="number"] {
     margin-top: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
 button {
@@ -56,6 +57,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.2s ease;
 }
 
 button:hover {
@@ -72,4 +74,5 @@ button:hover {
     margin: 10px 0;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    text-align: left;
 }
