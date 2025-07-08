@@ -59,4 +59,4 @@ export function bindCalculator() {
       `快速近视进展风险：${resRa.p.toFixed(3)} (95% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
-
+bindCalculator()
