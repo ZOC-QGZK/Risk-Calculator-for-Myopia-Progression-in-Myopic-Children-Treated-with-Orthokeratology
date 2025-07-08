@@ -9,8 +9,9 @@ export const SE = {
   rapid:     { intercept: 0.332, age: 0.000, alccc: 11.982 }
 };
 
-// 95% 预测区间对应的 z 分位数
-const Z_PI = 1.96;
+
+// 75% PI 对应的 z 分位数 ≈ 1.15035
+const Z_PI = 1.15035;
 // Logistic 残差方差 ≈ π²/3，用于包含个体差异
 const RESID_VAR = Math.PI**2 / 3;
 
@@ -64,9 +65,9 @@ export function bindCalculator() {
     const resRa = predictWithSymmetricPI('rapid',     age, alccc);
 
     $('result-excessive').textContent =
-      `过度近视进展风险：${resEx.p.toFixed(3)} (95% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
+      `过度近视进展风险：${resEx.p.toFixed(3)} (75% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
     $('result-rapid').textContent =
-      `快速近视进展风险：${resRa.p.toFixed(3)} (95% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+      `快速近视进展风险：${resRa.p.toFixed(3)} (75% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
 
