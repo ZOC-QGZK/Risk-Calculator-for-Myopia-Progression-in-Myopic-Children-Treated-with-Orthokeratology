@@ -77,7 +77,7 @@ export function bindCalculator() {
     const age   = Number($('age').value);
     const alccc = Number($('alccc').value);
     if (Number.isNaN(age) || Number.isNaN(alccc)) {
-      alert('请填写完整且正确的数字！');
+      alert('Please fill in the complete and correct numbers！');
       return;
     }
 
@@ -85,9 +85,9 @@ export function bindCalculator() {
     const resRa = predictWithBootstrapPI('rapid',     age, alccc);
 
     $('result-excessive').textContent =
-      `过度近视进展风险：${resEx.p.toFixed(3)} (75% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
+      `excessive myopia progression：${resEx.p.toFixed(3)} (75% PI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
     $('result-rapid').textContent =
-      `快速近视进展风险：${resRa.p.toFixed(3)} (75% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+      `rapid myopia progression：${resRa.p.toFixed(3)} (75% PI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
 
