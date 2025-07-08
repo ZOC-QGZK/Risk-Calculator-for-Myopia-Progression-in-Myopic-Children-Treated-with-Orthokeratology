@@ -9,13 +9,13 @@ export const SE = {
   rapid:     { intercept: 0.332, age: 0.000, alccc: 11.982 }
 };
 
-// —— **只修改这一行** ——
-// 99% CI 对应的 z 分位数
-const Z_CI = 2.5758;
+// —— **这里改成 1.645** ——
+// 90% CI 对应的 z 分位数
+const Z_CI = 1.645;
 
 const sigmoid = z => 1 / (1 + Math.exp(-z));
 
-// ——— 计算函数，带 99% CI ———
+// ——— 计算函数，带 90% CI ———
 export function predictWithCI(modelKey, age, alccc) {
   const m  = MODELS[modelKey];
   const se = SE[modelKey];
@@ -52,9 +52,9 @@ export function bindCalculator() {
     const resRa = predictWithCI('rapid',     age, alccc);
 
     $('result-excessive').textContent =
-      `过度近视进展风险：${resEx.p.toFixed(3)} (99% CI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
+      `过度近视进展风险：${resEx.p.toFixed(3)} (90% CI ${resEx.lo.toFixed(3)}–${resEx.hi.toFixed(3)})`;
     $('result-rapid').textContent =
-      `快速近视进展风险：${resRa.p.toFixed(3)} (99% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
+      `快速近视进展风险：${resRa.p.toFixed(3)} (90% CI ${resRa.lo.toFixed(3)}–${resRa.hi.toFixed(3)})`;
   });
 }
 
