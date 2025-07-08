@@ -9,14 +9,22 @@
 <body>
   <div class="container">
     <h1>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology</h1>
-    <p>
-      Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive myopia progression and rapid myopia progression under orthokeratology treatment. …
-    </p>
+  <p>
+    Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive and rapid myopia progression under orthokeratology treatment. If the risk exceeds 70%, it is considered high risk.<br><br>
+
+    Excessive myopia progression is defined as the first-year AL change under ortho-k treatment exceed age-specific annualised AL growth of non-progressive myopia, signaling ortho-k did not achieve satisfactory myopia control.<br><br>
+
+    Specifically, the annualised AL growth of non-progressive myopia is capped at 0.19 mm (8 yr), 0.23 mm (9 yr), 0.19 mm (10 yr), 0.20 mm (11 yr), 0.17 mm (12 yr), 0.13 mm (13 yr), 0.05 mm (14 yr).<br><br>
+
+    In addition, rapid myopia progression is defined as the first-year AL change under ortho-k treatment exceed age-specific annualised axial elongation observed in myopic children wearing single-vision spectacles.<br><br>
+
+    Specifically, the annualised AL growth is capped at 0.46 mm (8 yr), 0.41 mm (9 yr), 0.36 mm (10 yr), 0.31 mm (11 yr), 0.26 mm (12 yr), 0.22 mm (13 yr), 0.17 mm (14 yr).
+  </p>
 
     <form id="logistic-form">
       <div class="form-group">
         <label for="age"><strong>Age, yr</strong>：</label>
-        <input type="number" id="age" name="age" step="1" min="8" max="14" required />
+        <input type="number" id="age" name="age" step="any" min="8" max="14" required />
       </div>
       <div class="form-group">
         <label for="alccc"><strong>First-month AL Change, mm</strong>：</label>
