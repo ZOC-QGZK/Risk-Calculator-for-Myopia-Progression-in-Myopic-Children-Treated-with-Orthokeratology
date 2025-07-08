@@ -13,13 +13,12 @@ export const SE = {
 // —— **75% PI 的 z 值** ——
 const Z_PI = 1.15035;
 // —— **Bootstrap 采样次数** ——
-const B = 100;
+const B = 1000;
 
 const sigmoid = z => 1 / (1 + Math.exp(-z));
 
 // ——— 从 N(μ,σ²) 采样 ———
 function randNormal(mu, sigma) {
-  // Box–Muller transform
   const u1 = Math.random();
   const u2 = Math.random();
   const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
@@ -36,8 +35,13 @@ function randLogistic() {
 export function predictWithBootstrapPI(modelKey, age, alccc) {
   const m  = MODELS[modelKey];
   const se = SE[modelKey];
-  const ps = new Array(B);
 
+  // 原始点估计
+  const z0 = m.intercept + m.age * age + m.alccc * alccc;
+  const p0 = sigmoid(z0);
+
+  // Bootstrap 用于估计预测分布的标准差
+  const ps = new Array(B);
   for (let i = 0; i < B; i++) {
     // 参数扰动
     const b0   = randNormal(m.intercept, se.intercept);
@@ -50,19 +54,18 @@ export function predictWithBootstrapPI(modelKey, age, alccc) {
     ps[i] = sigmoid(z);
   }
 
-  // 计算 Bootstrap 分布的均值和标准差
+  // 计算 Bootstrap 分布的标准差（用于对称区间）
   const meanP = ps.reduce((s, v) => s + v, 0) / B;
   const varP  = ps.reduce((s, v) => s + Math.pow(v - meanP, 2), 0) / (B - 1);
   const sdP   = Math.sqrt(varP);
 
-  // 对称区间
-  let lo = meanP - Z_PI * sdP;
-  let hi = meanP + Z_PI * sdP;
-  // 边界截断 [0,1]
+  // 对称区间：以原点估计 p0 为中心
+  let lo = p0 - Z_PI * sdP;
+  let hi = p0 + Z_PI * sdP;
   lo = Math.max(0, lo);
   hi = Math.min(1, hi);
 
-  return { p: meanP, lo, hi };
+  return { p: p0, lo, hi };
 }
 
 // ——— 绑定按钮事件 ———
@@ -73,7 +76,6 @@ export function bindCalculator() {
   btn.addEventListener('click', () => {
     const age   = Number($('age').value);
     const alccc = Number($('alccc').value);
-
     if (Number.isNaN(age) || Number.isNaN(alccc)) {
       alert('请填写完整且正确的数字！');
       return;
