@@ -9,18 +9,19 @@
 <body>
   <div class="container">
     <h1>Risk Calculator for Myopia Progression in myopic children treated with orthokeratology</h1>
-    <p>Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive myopia progression and rapid myopia progression under orthokeratology treatment. …</p>
+    <p>
+      Enter the values of age (8 to 14 years old) and first-month axial length change to calculate the risk of excessive myopia progression and rapid myopia progression under orthokeratology treatment. …
+    </p>
 
     <form id="logistic-form">
       <div class="form-group">
         <label for="age"><strong>Age, yr</strong>：</label>
-        <input type="number" id="age" name="age" step="1" required />
+        <input type="number" id="age" name="age" step="1" min="8" max="14" required />
       </div>
       <div class="form-group">
         <label for="alccc"><strong>First-month AL Change, mm</strong>：</label>
         <input type="number" id="alccc" name="alccc" step="0.01" required />
       </div>
-      <!-- 将 onclick 去掉，改用 id 统一绑定 -->
       <button type="button" id="calc">Calculate</button>
     </form>
 
@@ -31,7 +32,7 @@
     </div>
   </div>
 
-  <!-- 以 module 方式引入你的脚本 -->
+  <!-- 将脚本放 body 底部，并以 module 方式引入 -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
